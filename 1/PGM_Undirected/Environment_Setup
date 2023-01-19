@@ -1,0 +1,14 @@
+1. To properly run the code, first install anaconda (be sure to answer yes on add to path):
+
+	Ubuntu: https://docs.anaconda.com/anaconda/install/linux/
+	Windows: https://www.anaconda.com/products/individual#windows
+
+2. Create an environment with the provided file (you may need to restart your shell first):
+
+	conda env create -f environment.yml
+	
+3. Activate the new environment:
+
+	conda activate pgm_pgmpy
+
+4. Navigate to the directory with the code and run with "python Undirected.py"
