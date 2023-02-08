@@ -103,8 +103,8 @@ def main():
     np.random.seed(42)
 
     # Set parameters
-    tau = 1.0 # node coefficent
-    lamb = 1.0 # smoothness coefficient
+    tau = 2.0 # node coefficent
+    lamb = 2.0 # smoothness coefficient
     theta = 0.2 # noise probability for flipping pixel value
     iters = 20 # number of iterations
     
@@ -115,9 +115,24 @@ def main():
     # Add noise to true image
     img_noisy = add_noise_to_image(img_true, theta=theta)
 
-    # Run LBP with sum-product algorithm
-    img_recon, energies = run_lbp_denoising(img_noisy, tau, lamb, iters)
-    
+    results = []
+
+    for t in np.arange(1,10.1,0.2):
+        for l in np.arange(1,10.1,0.2):
+
+            # Run LBP with sum-product algorithm
+            img_recon, energies = run_lbp_denoising(img_noisy, t, l, iters)
+            mse = ((img_true - img_recon)**2).mean(axis=None)
+            print(f"MSE {mse}")
+            results.append((t,l,mse,energies,img_recon,len(energies)))
+
+    results = sorted(results, key=lambda tup: tup[2])
+    img_recon = results[0][4]
+    energies = results[0][3]
+    tau = results[0][0]
+    lamb = results[0][1]
+    mse = results[0][2]
+
     # Save and plot results
     save_np_array_as_png('./results/img_original', img_true)
     save_np_array_as_png('./results/img_noisy', img_noisy)
@@ -134,6 +149,7 @@ def main():
     ax[1, 1].set_xlabel('Iteration')
     ax[1, 1].set_ylabel('$E(x, y)$')
     ax[1, 1].set_title('Energy')
+    plt.suptitle(f"Tau {tau} ,Lambda {lamb}, Mse {mse}")
     plt.show()
 
 
